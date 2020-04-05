@@ -14,6 +14,9 @@ char *filenames[] = {"/alexaone.txt","/alexatwo.txt","/alexathree.txt","/alexafo
 
 char *FORM_INPUTS[] = {"input_command_one","input_command_two","input_command_three","input_command_four","input_command_five","input_command_six","input_command_seven"};
 
+//teste
+uint8_t newMACAddress[] = {0x32, 0xAE, 0xA4, 0x07, 0x0D, 0x66};
+
 #define PIN_SDA      0
 #define PIN_SCL      2
 #define PCF_ADDR     0x27
@@ -60,7 +63,7 @@ void startCredentials(){
     memset(undefined,0,18);
   }
   
-  strcpy(AP_WIFI_SSID,"afintelihome");
+  strcpy(AP_WIFI_SSID,"AFInteliHome");
   strcpy(AP_WIFI_PASS,"afintelihome");
 
   strcpy(LOGIN_USER,"admin");

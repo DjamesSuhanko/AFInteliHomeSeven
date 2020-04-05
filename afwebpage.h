@@ -16,7 +16,7 @@ input[type=text]:focus {
 }
 
 input[type=submit] {
-  width: 100%;
+  width: 90%;
   background-color: #4CAF50;
   color: white;
   padding: 14px 20px;
@@ -24,6 +24,8 @@ input[type=submit] {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  box-shadow: 10px 10px 5px grey;
+
 }
 
 input[type=submit]:hover {
@@ -35,22 +37,34 @@ div {
   background-color: #f2f2f2;
   padding: 20px;
   box-shadow: 10px 10px 5px grey;
+  width: 80%;
+  opacity: 0.8;
 }
 
 p {
-  text-indent: 10px;
+  text-indent: 6px;
   text-align: justify;
   letter-spacing: 3px;
+  text-color: #c8c8c8;
 }
 
 h1 {
   color: white;
-  text-shadow: 2px 2px 4px #000000;
+  text-shadow: 2px 4px 6px #000000;
+  font-family: lucida;
+  font-stretch: expanded;
+  opacity: 0.6;
 }
 
 a {
-  text-decoration: none;
+  text-decoration-line: overline underline;
+  text-decoration-style: wavy;
   color: #008CBA;
+}
+
+body {
+  background-color: #e2e2e2;
+  font-family: arial;
 }
 
 </style>
@@ -88,5 +102,7 @@ a {
     
     
     <input type="submit" value="Submit">
+    <br>
+    <p>By: <a href="https://www.dobitaobyte.com.br">Do bit Ao Byte</a></p>
   </form><br>
 </body></html>)rawliteral";

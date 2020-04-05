@@ -28,8 +28,8 @@ void deleteFile(fs::FS &fs, char *filename);
 void changeStateOf(uint8_t target, bool st){
     Serial.print("Valor a ser mudado: ");
     Serial.println(bits_value);
-    //bits_value = st > 0 ? bits_value|(1<<target) : bits_value&~(1<<target);   
-    bits_value = bits_value^(1<<target);
+    bits_value = st < 1 ? bits_value|(1<<target) : bits_value&~(1<<target);   
+    //bits_value = bits_value^(1<<target);
     Wire.beginTransmission(PCF_ADDR);
     Wire.write(bits_value);
     Wire.endTransmission();
@@ -38,10 +38,18 @@ void changeStateOf(uint8_t target, bool st){
 }
 
 void setMultiDevices(){
+  /*
   for (uint8_t i=0;i<7;i++){
     fauxmo.addDevice(ALEXA_COMMANDS[i]);
-    delay(200);
-  }
+  }*/
+  fauxmo.addDevice(ALEXA_COMMANDS[0]);
+  fauxmo.addDevice(ALEXA_COMMANDS[1]);
+  fauxmo.addDevice(ALEXA_COMMANDS[2]);
+  //fauxmo.addDevice(ALEXA_COMMANDS[3]);
+  //fauxmo.addDevice(ALEXA_COMMANDS[4]);
+  //fauxmo.addDevice(ALEXA_COMMANDS[5]);
+  //fauxmo.addDevice(ALEXA_COMMANDS[6]);
+  Serial.println("device added");
 }
 
 void loadCredentials() {
@@ -207,12 +215,6 @@ void serverSetup() {
   // Custom entry point (not required by the library, here just as an example)
   //como nao eh utilizado pela lib, podemos jogar o index como config: (https://github.com/me-no-dev/ESPAsyncWebServer)
   //na pagina da lib tem exemplo de auth.
-  /*
-     Declarar a pagina antes dessa funcao usando progmem:
-     const char index_html[] PROGMEM = "..."; // large char array, tested with 14k
-     request->send_P(200, "text/html", index_html);
-
-  */
 
   server.on("/index.html", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(200, "text/plain", "Hello, world");
@@ -256,15 +258,11 @@ void serverSetup() {
     if (!request->authenticate(LOGIN_USER, LOGIN_PASS))
       return request->requestAuthentication();
 
-    //AsyncResponseStream *response = request->beginResponseStream("text/html");
-    //response->print(config_html);
-    //request->send(response);
-    //text/plain ou text/html
-
     request->send_P(200, "text/html", login_html);
   }
            );
 
+//-------------------------- credenciais --------------------------------------------------
   server.on("/credenciais",
             HTTP_GET,
   [](AsyncWebServerRequest * request) {
@@ -272,7 +270,7 @@ void serverSetup() {
       return request->requestAuthentication();
 
     AsyncResponseStream *response = request->beginResponseStream("text/html");
-    response->print("<html><body>STA SSID: ");
+    response->print("STA SSID: ");
     response->print(String(WIFI_SSID));
     response->print("<br>");
 
@@ -299,14 +297,12 @@ void serverSetup() {
     char msg[18];
     memset(msg,0,18);
     for (uint8_t i=0;i<7;i++){
-      sprintf(msg,"Identificador %d: ", i+1);
+      sprintf(msg,"IDENTIFIER %d: ", i+1);
       response->print(msg);
       response->print(String(ALEXA_COMMANDS[i]));
       response->print("<br>");
       memset(msg,0,18);
     }
-
-    response->print("<br></body></html>");
     
     request->send(response);
     //text/plain ou text/html
@@ -315,18 +311,7 @@ void serverSetup() {
   }
            );
 
-  //http://192.168.1.207/config
-  //?input_ssid=teste&input_passwd=um+&input_command=dois
-  /*
-     Acessando a url /config abre-se um formulario. Se não tiver ido para /login primeiro, será solicitado login aqui.
-    Depois de clicar em submit, os dados sao enviados para /setup.
-    os campos são:
-    input_ssid
-    input_passwd
-    input_command
-
-    Essas definicões estão no form, no arquivo afwebpage.h
-  */
+//------------------ redirecionado do /config -----------------------------------------
   server.on("/setup",
             HTTP_GET,
   [](AsyncWebServerRequest * request) {
@@ -469,7 +454,9 @@ void setup() {
 
 
   // Wifi
+  //wifi_set_macaddr(STATION_IF, &newMACAddress[0]);
   wifiSetup();
+  //wifi_set_macaddr(STATION_IF, &newMACAddress[0]);
 
   // Web server
   serverSetup();
@@ -513,7 +500,7 @@ void setup() {
     //digitalWrite(RELE0, !state); // we are nor-ing the state because our LED has inverse logic.
 
 
-    changeStateOf(device_id, true); 
+    changeStateOf(device_id, state); 
 
   });
 
